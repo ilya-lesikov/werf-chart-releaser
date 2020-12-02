@@ -15,7 +15,7 @@ def read(filename):
 
 setup(
     name="werf_chart_repo_doit_tasks",
-    version="1.0.1",
+    version="1.0.2",
     url="https://github.com/ilya-lesikov/werf_chart_repo_doit_tasks",
     license="MIT",
 
