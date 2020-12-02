@@ -3,5 +3,3 @@
 __version__ = '1.0.3'
 __author__ = 'Ilya Lesikov <ilya@lesikov.com>'
 __all__ = []
-
-import tasks
