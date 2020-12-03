@@ -329,7 +329,7 @@ def action_werf_publish_chart_package(package_path, chartmuseum_url, chartmuseum
                                       chartmuseum_basic_auth_pass, extra_args):
   return [
     (
-      f'curl -sSL --post301 --data-binary "@{package_path}"'
+      f'curl {" ".join(extra_args)} -sSL --post301 --data-binary "@{package_path}"'
       f' --user "{chartmuseum_basic_auth_user}:{chartmuseum_basic_auth_pass}"'
       f' "{urllib.parse.urljoin(chartmuseum_url, "/api/charts")}"'
     )
