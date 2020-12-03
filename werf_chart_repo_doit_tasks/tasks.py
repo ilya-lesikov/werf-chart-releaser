@@ -102,6 +102,40 @@ def task_werf_render_charts():
   }
 
 
+def task_werf_download_chart_dependencies():
+  """ Download chart dependencies from requirements.yaml """
+
+  def werf_download_chart_dependencies(chart_names, werf_version, werf_color_mode, extra_args, extra_env_vars):
+    if chart_names:
+      chart_paths = get_chart_paths(chart_names, CHART_ROOT_DIR)
+    else:
+      chart_paths = get_all_chart_paths(CHART_ROOT_DIR)
+
+    commands = []
+    commands += action_export_env_vars(extra_env_vars)
+    commands += action_prepare_werf(werf_version, werf_color_mode)
+    commands += action_werf_download_root_chart_dependencies(extra_args)
+    for chart_path in chart_paths:
+      commands += action_werf_download_nested_chart_dependencies(chart_path, extra_args)
+    return " && ".join(commands)
+
+  return {
+    "basename": "werf-download-chart-dependencies",
+    "verbosity": 2,
+    "actions": [CmdAction(werf_download_chart_dependencies, executable="/bin/bash")],
+    "params": get_common_werf_params() + get_common_extra_params() + [
+      {
+        "name": "chart_names",
+        "short": "c",
+        "long": "chart-name",
+        "type": list,
+        "default": [],
+        "help": f"Chart name, can be specified multiple times. Default: {get_all_chart_names(CHART_ROOT_DIR)}",
+      },
+    ],
+  }
+
+
 def task_werf_package_charts():
   """ Package werf chart(s) to publish them as artifact """
 
@@ -300,6 +334,14 @@ def action_werf_publish_chart_package(package_path, chartmuseum_url, chartmuseum
       f' "{urllib.parse.urljoin(chartmuseum_url, "/api/charts")}"'
     )
   ]
+
+
+def action_werf_download_root_chart_dependencies(extra_args):
+  return [f'werf helm dependency update {" ".join(extra_args)}']
+
+
+def action_werf_download_nested_chart_dependencies(chart_path, extra_args):
+  return [f'werf helm dependency update --helm-chart-dir "{chart_path}" {" ".join(extra_args)}']
 
 
 ################################################################################
