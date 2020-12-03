@@ -274,13 +274,13 @@ def action_export_env_vars(env_vars):
 
 
 def action_werf_lint(env, chart, extra_args):
-  return [f'werf helm lint --env "{env}" --set "{chart}._enabled=true" {" ".join(extra_args)}']
+  return [f'werf helm lint --env "{env}" --set "{chart}.enabled=true" {" ".join(extra_args)}']
 
 
 def action_werf_render(env, chart, extra_args):
   return [
     (
-      f'werf helm render --env "{env}" --set "{chart}._enabled=true" {" ".join(extra_args)}'
+      f'werf helm render --env "{env}" --set "{chart}.enabled=true" {" ".join(extra_args)}'
       f' | tail -n +6 | grep -vE "(^\#)|(werf.io/version)"'
       f' | yq -sy --indentless "sort_by(.apiVersion,.kind,.metadata.name)[]"'
     )
