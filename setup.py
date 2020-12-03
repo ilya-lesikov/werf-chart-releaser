@@ -29,6 +29,7 @@ setup(
 
     install_requires=[
       "doit >= 0.33.1, < 0.34",
+      "yq >= 2.11.0, <2.12",
     ],
 
     classifiers=[
